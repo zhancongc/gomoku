@@ -1,6 +1,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
+	<meta name="format-detection" content="telephone=no">
 	<title>五子棋</title>
 	<link rel="shortcut icon" href="../favicon.ico" type="image/x-icon">
 	<link rel="bookmark" href="../favicon.ico">
@@ -288,6 +289,8 @@ chess.user=prompt('What is your name?');
 function initial(){
 	//棋子的序号，描述落子的先后顺序
 	chess.code=1;
+	//你的对手
+	chess.opponent=''
 	//对应image监听器
 	chess.image='';
 	//对应start监听器
@@ -308,7 +311,7 @@ socket.on('response',function(message){
 	try{
 		chessJson=JSON.parse(message['data']);
 		if(chessJson.msg)
-			log(chessJson.username+': '+chessJson.msg);
+			log(chessJson.user+': '+chessJson.msg);
 		return false;
 	}
 	catch(e){
@@ -326,6 +329,7 @@ socket.on('start',function(message){
 	chessJson1=JSON.parse(message['data']);
 	chess.start=chessJson1.start
 	log('Game start.');
+	chess.opponent=((chessJson1.player1===chess.user)?chessJson1.player2:chessJson1.player1);
 });
 //监听棋权
 socket.on('right',function(message){
@@ -364,10 +368,10 @@ socket.on('result',function(message){
 //监听初始化
 socket.on('clear',function chessClear(){
 	initial();
-	for(var i=0;i<15;i++){
-		for(var j=0;i<15;j++){
-			getCell([i,j])[0].style.backgroundImage='';
-		}
+	list=$('span');
+	for(var i=0;i<list.length;i++){
+		list[i].parentNode.style.backgroundImage='';
+		list[i].parentNode.innerHTML='';
 	}
 });
 //获取元素坐标的函数
@@ -389,7 +393,8 @@ function getCell(coordinate){
 	x=coordinate[0];
 	y=coordinate[1];
 	var chessBar=document.querySelectorAll('.chess-line');
-	return chessBar[y].children[x];
+	obj=chessBar[y].childNodes[2*x+1];
+	return obj;
 }
 //log生成函数
 function log(msg) {
@@ -430,7 +435,7 @@ function send() {
 	var msg='';
 	msg=document.getElementById('text').value;
 	var message=new Object();
-	message.username=chess.user;
+	message.user=chess.user;
 	message.msg=msg;
 	data=JSON.stringify(message);
 	socket.emit('message', {data: data});
@@ -438,24 +443,41 @@ function send() {
 };
 //请求重来
 function restart(){
-	var varification=confirm('Do you really want to restart? This operation will not come into effect when you opponent refused.')
-	if(varification){
-		socket.emit('restart',{data:chess.user});
+	if (chess.start===1) {
+		var varification=confirm('Do you really want to restart? This operation will not come into effect when you opponent refused.')
+		if(varification){
+			socket.emit('restart',{data:chess.user});
+		}
+	}
+	if(chess.start===0){
+		socket.emit('message',{data:'{"msg":"##clear"}'});
 	}
 }
 //监听重来的消息
 socket.on('restart',function(message){
-	chessJson5=JSON.parse(message['data']);
-	if (chessJson5.user!==chess.user) {
-		var varification=confirm('Your opponent was meaning to restart the game, do you agree with him or her?');
+	if (message['data']===chess.opponent) {
+		var varification=confirm(chessJson.user+' was meaning to admit defeat or restart the game, do you agree with him or her?');
 		if (varification) {
-			socket.emit('restartResponse',{data: 1});
+			msgRestart={'user':chess.user,'confirm':1}.toString();
+			socket.emit('restartConfirm',{data: msgRestart});
 		}
 		else{
-			socket.emit('restartResponse',{data: 0});
+			msgRestart={'user':chess.user,'confirm':1}.toString();
+			socket.emit('restartConfirm',{data: msgRestart});
 		}
 	}
-})
+});
+//监听重来的确认消息
+socket.on('restartConfirm',function(message){
+	var chessJson=JSON.parse(message['data']);
+	if (chessJson.confirm===1) {
+		if (chessJson.user===chess.user) {
+			alert('Congratulations, you have won!');
+		}
+		alert(chessJson.user+' has won!');
+		initial();
+	}
+});
 function getUser(){
 	socket.emit('getUser');
 }

@@ -10,7 +10,15 @@ socketio=SocketIO(app)
 class chess(object):
 	variable=0
 	username=[]
+	loser=''
 	chessBar=[[0 for col in range(15)]for row in range(15)]
+
+	def clear():
+		variable=0
+		username=[]
+		loser=''
+		chessBar=[[0 for col in range(15)]for row in range(15)]
+
 
 def clock(key):
 	if key==0:
@@ -135,7 +143,7 @@ def handler_prepare(message):
 		if message['data'] and message['data']!=chess.username[0]:
 			chess.username.append(message['data'])
 			emit('response', {'data': chess.username[1]+' is prepared.'},broadcast=True)
-			msgStart=json.dumps({'start':1})
+			msgStart=json.dumps({'start':1,'player1':chess.username[0],'player2':chess.username[1]})
 			msgRight=json.dumps({'right':chess.username[0],'image':'../static/gomoku/black.png'})
 			emit('start', {'data': msgStart},broadcast=True)
 			emit('right', {'data': msgRight},broadcast=True)
@@ -167,14 +175,28 @@ def handler_chess(message):#{'user':'jack','image':'../static/gomoku/black.png',
 
 @socketio.on('message')
 def handler_message(message):
-	obj=json.loads(message['data'])#{"username":"jackson","msg":"hello,everyone"}
+	obj=json.loads(message['data'])#{"user":"jackson","msg":"hello,everyone"}
 	if(obj['msg']=='##clear'):
-		chess.variable=0
-		chess.username=[]
-		chess.chessBar=[[0 for col in range(15)]for row in range(15)]
 		emit('clear',broadcast=True)
+		chess.clear()
 	else:
 		emit('response',{'data':message['data']},broadcast=True)
+
+@socketio.on('restart')
+def handler_restart(message):
+	if(message['data']==chess.username[0]):
+		chess.loser=chess.username[0]
+	elif(message['data']==chess.username[1]):
+		chess.loser=chess.username[1]
+	emit('restartConfirm',{'data':chess.loser},broadcast=True)
+
+@socketio.on('restartConfirm')
+def handler_restartConfirm(message):
+	obj=json.loads(message['data'])
+	if(obj['user'] in chess.username and obj['user']!=chess.loser):
+		emit('restartConfirm',{'data':message['data']},broadcast=True)
+		if (obj['confirm']==1):
+			chess.clear()
 
 @socketio.on('getUser')
 def handler_getUser():
