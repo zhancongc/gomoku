@@ -11,7 +11,10 @@
 </head>
 <body>
 <div class="chess">
-	<div class="title">游戏规则：黑方先手，白方后手，双方轮流落子，先摆成五子连珠一方获胜</div>
+	<div class="title">
+		<div id="player1"></div>
+		<div id="player2"></div>
+	</div>
 	<div class="chess-bar">
 		<div class="chess-line">
 			<div class="chess-angle" onclick="play(this)" style="transform: rotate(-90deg);"></div>
@@ -273,12 +276,16 @@
 	</div>
 </div>
 <div class="control-bar">
-	<input class="button" type="button" onclick="prepare()" value="Prepare">
-	<input class="button" type="button" onclick="restart()" value="Restart">
+	<input class="button" type="button" onclick="prepare()" value="游戏准备">
+	<input class="button" type="button" onclick="restart()" value="再来一局">
 </div>
 <input id="text" type="text" maxlength="64">
-<input id="send" type="submit" value="send" onclick="send()">
-<h2>log:</h2>
+<input id="send" type="submit" value="发送" onclick="send()">
+<div>
+	<h1>会话：</h1>
+	<p onclick="gameHelp()" class="right-button">帮助</p>
+	<div id="gameHelp">游戏规则：黑方先手，白方后手，双方轮流落子，先摆成五子连珠一方获胜</div>
+</div>
 <div id="log"></div>
 <script type="text/javascript">
 //游戏逻辑
@@ -286,6 +293,7 @@
 var chess=new Object();
 //初始化本地用户
 chess.user=prompt('What is your name?');
+$('#player1').html('<p>玩家：'+chess.user+'</p>');
 function initial(){
 	//棋子的序号，描述落子的先后顺序
 	chess.code=1;
@@ -481,6 +489,9 @@ socket.on('restartConfirm',function(message){
 		initial();
 	}
 });
+function gameHelp(){
+	$("#gameHelp").slideToggle();
+}
 function getUser(){
 	socket.emit('getUser');
 }
