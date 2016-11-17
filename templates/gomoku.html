@@ -437,7 +437,7 @@ function send() {
 	var message=new Object();
 	message.user=chess.user;
 	message.msg=msg;
-	data=JSON.stringify(message);
+	var data=JSON.stringify(message);
 	socket.emit('message', {data: data});
 	document.getElementById('text').value='';
 };
@@ -450,7 +450,10 @@ function restart(){
 		}
 	}
 	if(chess.start===0){
-		socket.emit('message',{data:'{"msg":"##clear"}'});
+		var chessObject=new Object();
+		chessObject.user=chess.user;
+		var msgClear=JSON.stringify(chessObject);
+		socket.emit('clear', {data: msgClear});
 	}
 }
 //监听重来的消息

@@ -13,11 +13,11 @@ class chess(object):
 	loser=''
 	chessBar=[[0 for col in range(15)]for row in range(15)]
 
-	def clear():
-		variable=0
-		username=[]
-		loser=''
-		chessBar=[[0 for col in range(15)]for row in range(15)]
+def clear():
+	chess.variable=0
+	chess.username=[]
+	chess.loser=''
+	chess.chessBar=[[0 for col in range(15)]for row in range(15)]
 
 
 def clock(key):
@@ -148,7 +148,7 @@ def handler_prepare(message):
 			emit('start', {'data': msgStart},broadcast=True)
 			emit('right', {'data': msgRight},broadcast=True)
 	else:
-		if (len(chess.username)<10):
+		if (len(chess.username)>1 and len(chess.username)<10):
 			if message['data']:
 				chess.username.append(message['data'])
 			emit('response', {'data': 'this room is full.'})
@@ -175,12 +175,20 @@ def handler_chess(message):#{'user':'jack','image':'../static/gomoku/black.png',
 
 @socketio.on('message')
 def handler_message(message):
-	obj=json.loads(message['data'])#{"user":"jackson","msg":"hello,everyone"}
-	if(obj['msg']=='##clear'):
+	try:
+		obj=json.loads(message['data'])#{"user":"jackson","msg":"hello,everyone"}
+		print(obj['user']+':'+obj['msg'])
+	except ValueError as e:
+		print('It is not a chat.')
+	finally:
+		emit('response',{'data':message['data']},broadcast=True)
+
+@socketio.on('clear')
+def handler_clear(message):
+	obj=json.loads(message['data'])
+	if(obj['user'] in chess.username):
 		emit('clear',broadcast=True)
 		chess.clear()
-	else:
-		emit('response',{'data':message['data']},broadcast=True)
 
 @socketio.on('restart')
 def handler_restart(message):
@@ -188,6 +196,7 @@ def handler_restart(message):
 		chess.loser=chess.username[0]
 	elif(message['data']==chess.username[1]):
 		chess.loser=chess.username[1]
+	print('chess.loser: '+chess.loser)
 	emit('restartConfirm',{'data':chess.loser},broadcast=True)
 
 @socketio.on('restartConfirm')
@@ -196,6 +205,7 @@ def handler_restartConfirm(message):
 	if(obj['user'] in chess.username and obj['user']!=chess.loser):
 		emit('restartConfirm',{'data':message['data']},broadcast=True)
 		if (obj['confirm']==1):
+			print('game will be clear.')
 			chess.clear()
 
 @socketio.on('getUser')
