@@ -1,0 +1,49 @@
+.top-bar{
+	position: relative;
+	top: 0px;
+	left: 0px;
+	width: auto;
+	min-height: 80px;
+	background-color: #999999;
+	border: 1px solid #333;
+}
+.top-bar-menu{
+	position: relative;
+	top: 80px;
+	left: 0px;
+	width: auto;
+	min-height: 180px;
+	background-color: #999999;
+	border: 1px solid #333;
+	display: none;
+}
+#title{
+	float: left;
+}
+#menu{
+	position: relative;
+	top: 5px;
+	right: 5px;
+	float: right;
+	width: 70px;
+	height: 70px;
+	background-color: #ffffff;
+}
+.first-bar{
+	position: relative;
+	top: 0px;
+	right: 0px;
+	width: auto;
+	height: 480px;
+	border: 1px solid #333;
+	background-color: #dfdfdf; 
+}
+.buttom-bar{
+	position: relative;
+	top: 0px;
+	right: 0px;
+	width: auto;
+	height: 50px;
+	border: 1px solid #333;
+	background-color: #ae69d4;
+}
