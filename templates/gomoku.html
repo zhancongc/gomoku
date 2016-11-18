@@ -377,6 +377,7 @@ socket.on('result',function(message){
 socket.on('clear',function chessClear(){
 	initial();
 	list=$('span');
+	log('Now,it is a new game.');
 	for(var i=0;i<list.length;i++){
 		list[i].parentNode.style.backgroundImage='';
 		list[i].parentNode.innerHTML='';
