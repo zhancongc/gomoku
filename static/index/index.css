@@ -2,30 +2,32 @@
 	background-image: url(camera.jpg);
 }
 .top-bar{
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: auto;
+    min-height: 80px;
+    background-color: #010517;
+    border: 1px solid #333;
+}
+.top-bar-menu{
 	position: relative;
 	top: 0px;
 	left: 0px;
 	width: auto;
-	min-height: 80px;
-	background-color: #393939;
-	border: 1px solid #333;
-	color: white;
-	opacity: 0.8;
-}
-.top-bar-menu{
-	position: relative;
-	top: 80px;
-	left: 0px;
-	width: auto;
 	min-height: 180px;
-	background-color: #999999;
+	background-color: #33373c;
 	border: 1px solid #333;
 	display: none;
-	opacity: 0.9;
+	opacity: 1;
 }
 #title{
-	float: left;
-	opacity: 1;
+    font-family: "微软雅黑";
+    line-height: 80px;
+    position: relative;
+    color: #f3c088;
+    font-size: 36px;
+    left: 20px;
 }
 #menu{
 	position: relative;
@@ -35,7 +37,6 @@
 	width: 70px;
 	height: 70px;
 	background-color: #ffffff;
-	opacity: 0.9;
 }
 .first-bar{
 	position: relative;
@@ -45,7 +46,7 @@
 	height: 800px;
 	border: 1px solid #333;
 	background-color: #dfdfdf; 
-	opacity: 0.5;
+	opacity: 0.2;
 }
 .buttom-bar{
 	position: relative;
