@@ -1,11 +1,16 @@
+.background{
+	background-image: url(camera.jpg);
+}
 .top-bar{
 	position: relative;
 	top: 0px;
 	left: 0px;
 	width: auto;
 	min-height: 80px;
-	background-color: #999999;
+	background-color: #393939;
 	border: 1px solid #333;
+	color: white;
+	opacity: 0.8;
 }
 .top-bar-menu{
 	position: relative;
@@ -16,9 +21,11 @@
 	background-color: #999999;
 	border: 1px solid #333;
 	display: none;
+	opacity: 0.9;
 }
 #title{
 	float: left;
+	opacity: 1;
 }
 #menu{
 	position: relative;
@@ -28,15 +35,17 @@
 	width: 70px;
 	height: 70px;
 	background-color: #ffffff;
+	opacity: 0.9;
 }
 .first-bar{
 	position: relative;
 	top: 0px;
 	right: 0px;
 	width: auto;
-	height: 480px;
+	height: 800px;
 	border: 1px solid #333;
 	background-color: #dfdfdf; 
+	opacity: 0.5;
 }
 .buttom-bar{
 	position: relative;
@@ -45,5 +54,6 @@
 	width: auto;
 	height: 50px;
 	border: 1px solid #333;
-	background-color: #ae69d4;
+	background-color: #393939;
+	opacity: 1;
 }
