@@ -317,7 +317,7 @@ var socket=io.connect(location.protocol+'//'+document.domain+':'+location.port+n
 //监听日志
 socket.on('response',function(message){
 	try{
-		chessJson=JSON.parse(message['data']);
+		var chessJson=JSON.parse(message['data']);
 		if(chessJson.msg)
 			log(chessJson.user+': '+chessJson.msg);
 		return false;
@@ -329,38 +329,38 @@ socket.on('response',function(message){
 });
 //监听棋子颜色
 socket.on('image',function(message){
-	chessJson0=JSON.parse(message['data']);
-	chess.image=chessJson0.image;
+	var chessJson=JSON.parse(message['data']);
+	chess.image=chessJson.image;
 });
 //监听游戏开始
 socket.on('start',function(message){
-	chessJson1=JSON.parse(message['data']);
-	chess.start=chessJson1.start
+	var chessJson=JSON.parse(message['data']);
+	chess.start=chessJson.start
 	log('Game start.');
-	chess.opponent=((chessJson1.player1===chess.user)?chessJson1.player2:chessJson1.player1);
+	chess.opponent=((chessJson.player1===chess.user)?chessJson.player2:chessJson.player1);
 });
 //监听棋权
 socket.on('right',function(message){
-	chessJson2=JSON.parse(message['data']);
-	chess.right=chessJson2.right;
-	chess.image=chessJson2.image;
+	var chessJson=JSON.parse(message['data']);
+	chess.right=chessJson.right;
+	chess.image=chessJson.image;
 	log('It is '+chess.right+'\'s turn.');
 });
 //监听落子信息
 socket.on('coordinate',function(message){
-	chessJson3=JSON.parse(message['data']);
-	chess.image=chessJson3.image;
-	chess.coordinate=[chessJson3.x,chessJson3.y];
+	var chessJson=JSON.parse(message['data']);
+	chess.image=chessJson.image;
+	chess.coordinate=[chessJson.x,chessJson.y];
 	log(chess.coordinate);
-	getCell(chess.coordinate).style.backgroundImage='url('+chessJson3.image+')';
+	getCell(chess.coordinate).style.backgroundImage='url('+chessJson.image+')';
 	getCell(chess.coordinate).innerHTML='<span class="code">'+chess.code.toString()+'</span>'
 	getCell(chess.coordinate).children[0].style.color=(chess.code%2===1?'white':'grey');
 	chess.code+=1;
 });
 //监听胜负信息
 socket.on('result',function(message){
-	chessJson4=JSON.parse(message['data']);
-	chess.result=chessJson4.result;
+	var chessJson=JSON.parse(message['data']);
+	chess.result=chessJson.result;
 	log('Winner is '+chess.result);
 	chess.start=0;
 	if(chess.result===chess.user){
@@ -401,7 +401,7 @@ function getCell(coordinate){
 	x=coordinate[0];
 	y=coordinate[1];
 	var chessBar=document.querySelectorAll('.chess-line');
-	obj=chessBar[y].childNodes[2*x+1];
+	var obj=chessBar[y].childNodes[2*x+1];
 	return obj;
 }
 //log生成函数
@@ -417,12 +417,11 @@ function play(obj){
 	if(chess.start&&chess.right===chess.user){
 		var coordinate=getCoordinate(obj);
 		var chessJson=new Object();
-		var chessData='';
 		chessJson.user=chess.user;
 		chessJson.image=chess.image;
 		chessJson.x=coordinate[0];
 		chessJson.y=coordinate[1];
-		chessData=JSON.stringify(chessJson);
+		var chessData=JSON.stringify(chessJson);
 		socket.emit('chess',{data: chessData});//{'user':'jack','image':'../static/gomoku/black.png','x':6,'y':5}
 	}
 }
@@ -455,6 +454,7 @@ function restart(){
 		var varification=confirm('Do you really want to restart? This operation will not come into effect when you opponent refused.')
 		if(varification){
 			socket.emit('restart',{data:chess.user});
+			console.log(chess.user);
 		}
 	}
 	if(chess.start===0){
@@ -469,11 +469,11 @@ socket.on('restart',function(message){
 	if (message['data']===chess.opponent) {
 		var varification=confirm(chessJson.user+' was meaning to admit defeat or restart the game, do you agree with him or her?');
 		if (varification) {
-			msgRestart={'user':chess.user,'confirm':1}.toString();
+			var msgRestart={'user':chess.user,'confirm':1}.toString();
 			socket.emit('restartConfirm',{data: msgRestart});
 		}
 		else{
-			msgRestart={'user':chess.user,'confirm':1}.toString();
+			var msgRestart={'user':chess.user,'confirm':1}.toString();
 			socket.emit('restartConfirm',{data: msgRestart});
 		}
 	}
