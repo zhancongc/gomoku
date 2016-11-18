@@ -188,7 +188,7 @@ def handler_clear(message):
 	obj=json.loads(message['data'])
 	if(obj['user'] in chess.username):
 		emit('clear',broadcast=True)
-		chess.clear()
+		clear()
 
 @socketio.on('restart')
 def handler_restart(message):
@@ -206,7 +206,7 @@ def handler_restartConfirm(message):
 		emit('restartConfirm',{'data':message['data']},broadcast=True)
 		if (obj['confirm']==1):
 			print('game will be clear.')
-			chess.clear()
+			clear()
 
 @socketio.on('getUser')
 def handler_getUser():
