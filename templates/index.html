@@ -9,19 +9,22 @@
 <body>
 <div class="top-bar">
 	<span id="title">煎饼师傅的网站</span>
-	<div id="menu"></div>
+	<div id="user">
+		<div id="user-icon"></div>
+	</div>
 	<div id="search">
 		<div id="search-icon"></div>
+		<input id="search-input" type="text">
 	</div>
 </div>
-<div class="top-bar-menu"></div>
+<div class="top-bar-user"></div>
 <div class="background">
 	<div class="first-bar"></div>
 </div>
 <div class="buttom-bar"></div>
 <script type="text/javascript">
-$('#menu').click(function(){
-	$('.top-bar-menu').slideToggle('slow');
+$('#user').click(function(){
+	$('.top-bar-user').slideToggle('slow');
 })
 </script>
 </body>
