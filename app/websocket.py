@@ -1,5 +1,11 @@
-from run import app
+from flask import Flask, request, session
+from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
+from views import mode
 
+app=Flask(__name__)
+app.register_blueprint(mode, url_prefix='')
+app.config['DEBUG']=True
+app.config['SECRET_KEY']='secret'
 socketio=SocketIO(app)
 
 @socketio.on('connect',namespace='/')
