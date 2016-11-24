@@ -1,6 +1,4 @@
-.background{
-	background-image: 100% url(camera.jpg) no-repeat;
-}
+body
 .top-bar{
 	position: relative;
 	top: 0px;
@@ -9,71 +7,71 @@
 	min-height: 80px;
 	background-color: #010517;
 }
-#title{
-	font-family: "微软雅黑";
-	line-height: 80px;
-	position: relative;
-	color: #f3c088;
-	font-size: 36px;
-	left: 20px;
-}
-#search{
-	float: right;
-	position: relative;
-	top: 10px;
-	right: 20px;
-	width: 250px;
-	height: 60px;
-	font-family: Arial;
-	font-size: 32px;
-	color: #676767;
-	background-color: white;
-	border-radius: 20px;
-	line-height: 60px;
-	opacity: 0.8;
-}
-#search-icon{
-	width: 36px;
-	height: 36px;
-	float: left;
-	position: relative;
-	top: 12px;
-	left: 12px;
-	background-image: url(search.png);
-	background-size: cover;
-}
-#search-input{
-	width: 195px;
-	height: 58px;
-	position: relative;
-	top: 0px;
-	left: 20px;
-	border-radius: 20px;
-	color: black;
-	font-size: 36px;
-	border: none;
-	outline: none;
-}
-#user{
-	float: right;
-	position: relative;
-	top: 10px;
-	right: 10px;
-	width: 60px;
-	height: 60px;
-	background-color: #ffffff;
-	border-radius: 20px;
-	opacity: 0.8;
-}
-#user-icon{
-	position: relative;
-	top: 10px;
-	left: 10px;
-	width: 40px;
-	height: 40px;
-	background-image: url(user.png);
-	background-size: cover;
-}
+	#title{
+		font-family: "微软雅黑";
+		line-height: 80px;
+		position: relative;
+		color: #f3c088;
+		font-size: 36px;
+		left: 20px;
+	}
+	#user{
+		float: right;
+		position: relative;
+		top: 10px;
+		right: 10px;
+		width: 60px;
+		height: 60px;
+		background-color: #ffffff;
+		border-radius: 20px;
+		opacity: 0.8;
+	}
+		#user-icon{
+			position: relative;
+			top: 10px;
+			left: 10px;
+			width: 40px;
+			height: 40px;
+			background-image: url(user.png);
+			background-size: cover;
+		}
+	#search{
+		float: right;
+		position: relative;
+		top: 10px;
+		right: 20px;
+		width: 250px;
+		height: 60px;
+		font-family: Arial;
+		font-size: 32px;
+		color: #676767;
+		background-color: white;
+		border-radius: 20px;
+		line-height: 60px;
+		opacity: 0.8;
+	}
+		#search-icon{
+			width: 36px;
+			height: 36px;
+			float: left;
+			position: relative;
+			top: 12px;
+			left: 12px;
+			background-image: url(search.png);
+			background-size: cover;
+		}
+		#search-input{
+			width: 195px;
+			height: 58px;
+			position: relative;
+			top: 0px;
+			left: 20px;
+			border-radius: 20px;
+			color: black;
+			font-size: 36px;
+			border: none;
+			outline: none;
+		}
 .top-bar-user{
 	position: relative;
 	top: 0px;
@@ -84,15 +82,18 @@
 	display: none;
 	opacity: 1;
 }
-.first-bar{
-	position: relative;
-	top: 0px;
-	right: 0px;
-	width: auto;
-	height: 800px;
-	background-color: #dfdfdf; 
-	opacity: 0.2;
+.background{
+	background-image: url(camera.jpg);
 }
+	.first-bar{
+		position: relative;
+		top: 0px;
+		right: 0px;
+		width: auto;
+		height: 800px;
+		background-color: #dfdfdf; 
+		opacity: 0.2;
+	}
 .buttom-bar{
 	position: relative;
 	top: 0px;
