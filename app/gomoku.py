@@ -1,6 +1,10 @@
+import sys
+sys.path.append('..')
+import json
 from flask import Flask, request, session
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from app.views import mode
+from app.chess import chess
 
 app=Flask(__name__)
 app.register_blueprint(mode, url_prefix='')
@@ -8,12 +12,14 @@ app.config['DEBUG']=True
 app.config['SECRET_KEY']='secret'
 socketio=SocketIO(app)
 
+
 @socketio.on('connect',namespace='/')
 def handler_connect():
 	emit('response', {'data': 'connection established!'})
 
 @socketio.on('prepare')
 def handler_prepare(message):
+	print('someone was prepared.')
 	if (len(chess.username)==0):
 		if message['data']:
 			chess.username.append(message['data'])
@@ -95,3 +101,6 @@ def handler_getUser():
 @socketio.on('getVariable')
 def handler_getVariable():
 	emit('response',{'data':chess.variable})
+
+if __name__ == '__main__':
+	socketio.run(app,host='0.0.0.0',port=5000)

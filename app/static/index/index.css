@@ -1,5 +1,5 @@
 .background{
-	background-image: url(camera.jpg);
+	background-image: 100% url(camera.jpg) no-repeat;
 }
 .top-bar{
 	position: relative;

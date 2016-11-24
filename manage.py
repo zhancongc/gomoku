@@ -1,6 +1,6 @@
 from flask_script import Manager, Server
 from app.chess import chess
-from app.gomoku import app, socketio
+from app.gomoku import *
 
 
 manager=Manager(app)
