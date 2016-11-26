@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 class chess(object):
 	variable=0
 	username=[]
@@ -108,3 +110,8 @@ class chess(object):
 			return(1)
 		else:
 			return(0)
+
+	def logRecord(message):
+		log=open('../log/gomoku.log','a+')
+		log.write(message)
+		log.close()

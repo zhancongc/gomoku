@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 from flask import Flask, render_template, abort, Blueprint
 
 mode = Blueprint('user', __name__, template_folder='templates')

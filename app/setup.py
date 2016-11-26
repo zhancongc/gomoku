@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
 import sys
 sys.path.append('..')
 import json
@@ -5,6 +7,7 @@ from flask import Flask, request, session
 from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 from app.views import mode
 from app.chess import chess
+
 
 app=Flask(__name__)
 app.register_blueprint(mode, url_prefix='')
