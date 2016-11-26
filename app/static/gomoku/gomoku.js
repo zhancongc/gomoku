@@ -19,6 +19,15 @@ function initial(){
 	chess.coordinate=[];
 	//对应result监听器
 	chess.result='';
+	//对应restart监听器
+	chess.loser='';
+	//清除场上的棋子
+	list=$('span');
+	log('Now,it is a new game.');
+	for(var i=0;i<list.length;i++){
+		list[i].parentNode.style.backgroundImage='';
+		list[i].parentNode.innerHTML='';
+	}
 }
 initial();
 //获取元素坐标的函数
@@ -83,23 +92,27 @@ function send() {
 	var message=new Object();
 	message.user=chess.user;
 	message.msg=msg;
-	var data=JSON.stringify(message);
-	socket.emit('message', {data: data});
+	var msgSend=JSON.stringify(message);
+	socket.emit('message', {data: msgSend});
 	document.getElementById('text').value='';
 };
 //请求重来
 function restart(){
 	if (chess.start===1) {
-		var varification=confirm('Do you really want to restart? This operation will not come into effect when you opponent refused.')
+		var varification=confirm('你希望认输并开始下一局吗？如果你的对手不同意则不会生效。')
 		if(varification){
-			socket.emit('restart',{data:chess.user});
+			chess.loser=chess.user;
+			var message=new Object();
+			message.loser=chess.loser;
+			var msgRestart=JSON.stringify(message);
+			socket.emit('restart',{data: msgRestart});//{'loser':'jack'}
 			console.log(chess.user);
 		}
 	}
 	if(chess.start===0){
-		var chessObject=new Object();
-		chessObject.user=chess.user;
-		var msgClear=JSON.stringify(chessObject);
+		var message=new Object();
+		message.user=chess.user;
+		var msgClear=JSON.stringify(message);
 		socket.emit('clear', {data: msgClear});
 	}
 }

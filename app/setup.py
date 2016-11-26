@@ -46,7 +46,8 @@ def handler_chess(message):#{'user':'jack','image':'../static/gomoku/black.png',
 		chess.chessBar[obj['x']][obj['y']]=chess.variable+1
 		dot=[obj['x'],obj['y']]
 		if chess.judgeWin(chess.variable+1,dot):
-			msgResult=json.dumps({'result': chess.username[chess.variable]})
+			chess.winner=chess.username[chess.variable]
+			msgResult=json.dumps({'result': chess.winner})
 			print(msgResult)
 			emit('result',{'data': msgResult},broadcast=True)
 		else:
@@ -77,21 +78,25 @@ def handler_clear(message):
 
 @socketio.on('restart')
 def handler_restart(message):
-	if(message['data']==chess.username[0]):
+	obj=json.loads(message['data'])#{'loser':'jack'}
+	if(obj['loser']==chess.username[0]):
 		chess.loser=chess.username[0]
-	elif(message['data']==chess.username[1]):
+	elif(obj['loser']==chess.username[1]):
 		chess.loser=chess.username[1]
 	print('chess.loser: '+chess.loser)
-	emit('restartConfirm',{'data':chess.loser},broadcast=True)
+	emit('restart',{'data': message['data']}, broadcast=True)#{'loser':'jack'}
 
 @socketio.on('restartConfirm')
 def handler_restartConfirm(message):
-	obj=json.loads(message['data'])
-	if(obj['user'] in chess.username and obj['user']!=chess.loser):
-		emit('restartConfirm',{'data':message['data']},broadcast=True)
-		if (obj['confirm']==1):
-			print('game will be clear.')
-			chess.clear()
+	obj=json.loads(message['data'])#{'user':'lucy','confirm':1}
+	if(obj['user'] in chess.username and obj['user']!=chess.loser and obj['confirm']==1):
+		chess.winner=obj['user']
+		msgResult=json.dumps({'result': chess.winner})
+		print(msgResult)
+		emit('result',{'data': msgResult}, broadcast=True)#{'result':'lucy'}
+		emit('clear',broadcast=True)
+		print('game will be clear.')
+		chess.clear()
 
 @socketio.on('getUser')
 def handler_getUser():

@@ -46,52 +46,41 @@ socket.on('coordinate',function(message){
 });
 //监听胜负信息
 socket.on('result',function(message){
-	var chessJson=JSON.parse(message['data']);
+	var chessJson=JSON.parse(message['data']);//{'result':'lucy'}
 	chess.result=chessJson.result;
 	log('Winner is '+chess.result);
 	chess.start=0;
 	if(chess.result===chess.user){
-		alert('Congratulations, you have won!');
+		alert('恭喜你，你赢了！');
 	}
 	else if (chess.result==='dogfall') {
-		alert('Neither you win, nor lose.How about trying again?');
+		alert('很可惜是平局，再来一局如何？');
 	}
 	else {
-		alert(chess.result+' has won.')
+		alert(chess.result+'赢了。')
 	}
 });
 //监听初始化
 socket.on('clear',function chessClear(){
 	initial();
-	list=$('span');
-	log('Now,it is a new game.');
-	for(var i=0;i<list.length;i++){
-		list[i].parentNode.style.backgroundImage='';
-		list[i].parentNode.innerHTML='';
-	}
 });
 //监听重来的消息
 socket.on('restart',function(message){
-	if (message['data']===chess.opponent) {
-		var varification=confirm(chessJson.user+' was meaning to admit defeat or restart the game, do you agree with him or her?');
+	var chessJson=JSON.parse(message['data']);//{'loser':'jack'}
+	console.log('loser: '+chessJson['loser']);
+	console.log('opponent: '+chess.opponent);
+	if (chessJson['loser']===chess.opponent) {
+		var varification=confirm(chess.opponent+'希望结束这一局，开始下一局游戏，你接收吗？');
+		var message=new Object();
+		message.user=chess.user;
 		if (varification) {
-			var msgRestart={'user':chess.user,'confirm':1}.toString();
-			socket.emit('restartConfirm',{data: msgRestart});
+			message.confirm=1;
 		}
 		else{
-			var msgRestart={'user':chess.user,'confirm':1}.toString();
-			socket.emit('restartConfirm',{data: msgRestart});
+			message.confirm=0;
 		}
-	}
-});
-//监听重来的确认消息
-socket.on('restartConfirm',function(message){
-	var chessJson=JSON.parse(message['data']);
-	if (chessJson.confirm===1) {
-		if (chessJson.user===chess.user) {
-			alert('Congratulations, you have won!');
-		}
-		alert(chessJson.user+' has won!');
-		initial();
+		var msgRestart=JSON.stringify(message);
+		console.log(msgRestart);
+		socket.emit('restartConfirm',{data: msgRestart});//{'user':'lucy','confirm':1}
 	}
 });

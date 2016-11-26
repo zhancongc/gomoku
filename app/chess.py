@@ -1,6 +1,7 @@
 class chess(object):
 	variable=0
 	username=[]
+	winner=''
 	loser=''
 	chessBar=[[0 for col in range(15)]for row in range(15)]
 
