@@ -11,3 +11,7 @@ def index():
 @mode.route('/gomoku')
 def gomoku():
 	return render_template('gomoku.html')
+
+@mode.route('/henry')
+def henry():
+	return render_template('henry.html')
