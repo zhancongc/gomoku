@@ -1,19 +1,23 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
-class chess(object):
-	variable=0
-	username=[]
-	winner=''
-	loser=''
-	chessBar=[[0 for col in range(15)]for row in range(15)]
+class Chess(object):
+	def __init__(self,variable,username,winner,loser,chessBar,rank):
+		self.variable=variable
+		self.username=username
+		self.winner=winner
+		self.loser=loser
+		self.chessBar=chessBar
+		self.rank=rank
 
-	def clear():
-		chess.variable=0
-		chess.username=[]
-		chess.loser=''
-		chess.chessBar=[[0 for col in range(15)]for row in range(15)]
+	def clear(self):
+		self.variable=0
+		self.username=[]
+		self.winner=''
+		self.loser=''
+		self.chessBar=[[0 for col in range(15)]for row in range(15)]
+		self.rank=[[0 for col in range(15)]for row in range(15)]
 
-	def clock(key):
+	def clock(self,key):
 		if key==0:
 			return(1)
 		if key==1:
@@ -21,23 +25,23 @@ class chess(object):
 		else:
 			raise ValueError
 
-	def judgeWin(varification,coordinate):#judgeWin(1,[4,5])
+	def judgeWin(self,varification,coordinate):#judgeWin(1,[4,5])
 		judge=[]
 		for i in range(4):# 0:0d,1:45d,2:90d,3:135d
-			judge.append(chess.fiveConnection(i,varification,coordinate))
+			judge.append(self.fiveConnection(i,varification,coordinate))
 		print(judge)
 		for x in judge:
 			if x:
 				return(1)
 		return(0)
 
-	def fiveConnection(type,varification,coordinate):
+	def fiveConnection(self,type,varification,coordinate):
 		count=0
 		if type==0:
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x<15 and chess.chessBar[x][y]==varification):
+				if (x<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x+=1
 				else:
@@ -45,7 +49,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x>=0 and chess.chessBar[x][y]==varification):
+				if (x>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x-=1
 				else:
@@ -54,7 +58,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x<15 and y<15 and chess.chessBar[x][y]==varification):
+				if (x<15 and y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x+=1
 					y+=1
@@ -63,7 +67,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x>=0 and y>=0 and chess.chessBar[x][y]==varification):
+				if (x>=0 and y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x-=1
 					y-=1
@@ -73,7 +77,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (y<15 and chess.chessBar[x][y]==varification):
+				if (y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					y+=1
 				else:
@@ -81,7 +85,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (y>=0 and chess.chessBar[x][y]==varification):
+				if (y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					y-=1
 				else:
@@ -90,7 +94,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x>=0 and y<15 and chess.chessBar[x][y]==varification):
+				if (x>=0 and y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x-=1
 					y+=1
@@ -99,7 +103,7 @@ class chess(object):
 			x=coordinate[0]
 			y=coordinate[1]
 			while True:
-				if (x<15 and y>=0 and chess.chessBar[x][y]==varification):
+				if (x<15 and y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x+=1
 					y-=1
@@ -111,28 +115,27 @@ class chess(object):
 		else:
 			return(0)
 
-	def logRecord(message):
+	def logRecord(self,message):
 		log=open('../log/gomoku.log','a+')
 		log.write(message)
 		log.close()
 
 
-	def statusCode(type,varification,coordinate):# fiveConnection(0,1,[4,5])
-		count=0
-		interference=0
-		handler=[]
-		score=0
+	def dotRank(self,type,varification,coordinate):# fiveConnection(0,1,[4,5])
+		count=0 #连子个数
+		interference=0 #挡路的棋子
+		handler=[] #解决方案
+		score=0 #得分
 		if type==0:
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x<15 and chessBar[x][y]==varification):
+				if (x<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x+=1
 				else:
-					x+=1
 					if (x<15):
-						if(chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if(self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -140,14 +143,13 @@ class chess(object):
 					break
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x>=0 and chess.chessBar[x][y]==varification):
+				if (x>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x-=1
 				else:
-					x-=1
 					if (x>=0):
-						if (chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if (self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -156,14 +158,13 @@ class chess(object):
 		elif type==1:
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x<15 and y<15 and chess.chessBar[x][y]==varification):
+				if (x<15 and y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x,y=x+1,y+1
 				else:
-					x,y=x+1,y+1
 					if (x<15 and y<15):
-						if (chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if (self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -171,14 +172,13 @@ class chess(object):
 					break
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x>=0 and y>=0 and chess.chessBar[x][y]==varification):
+				if (x>=0 and y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x,y=x-1,y-1
 				else:
-					x,y=x-1,y-1
-					if (x>=0 and y>=0)
-						if (chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+					if (x>=0 and y>=0):
+						if (self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -187,14 +187,13 @@ class chess(object):
 		elif type==2:
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (y<15 and chess.chessBar[x][y]==varification):
+				if (y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					y+=1
 				else:
-					y+=1
 					if (y<15):
-						if (chess.chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if (self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -202,14 +201,13 @@ class chess(object):
 					break
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (y>=0 and chess.chessBar[x][y]==varification):
+				if (y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					y-=1
 				else:
-					y-=1
 					if (y>0):
-						if(chess.chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if(self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -218,14 +216,13 @@ class chess(object):
 		elif type==3:
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x>=0 and y<15 and chess.chessBar[x][y]==varification):
+				if (x>=0 and y<15 and self.chessBar[x][y]==varification):
 					count+=1
 					x,y=x-1,y+1
 				else:
-					x,y=x-1,y+1
 					if (x>=0 and y<15):
-						if(chess.chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if(self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
@@ -233,21 +230,21 @@ class chess(object):
 					break
 			x,y=coordinate[0],coordinate[1]
 			while True:
-				if (x<15 and y>=0 and chess.chessBar[x][y]==varification):
+				if (x<15 and y>=0 and self.chessBar[x][y]==varification):
 					count+=1
 					x,y=x+1,y-1
 				else:
-					x,y=x+1,y-1
 					if (x<15 and y>=0):
-						if(chess.chessBar[x][y]!=0):
-							if (chessBar[x][y]!=varification):
+						if(self.chessBar[x][y]!=0):
+							if (self.chessBar[x][y]!=varification):
 								interference+=1
 						else:
 							handler.append(x)
 							handler.append(y)
 					break
-		print('count: '+count)
-		print('interference: '+interference)
+		print('count: %s' % count)
+		print('interference: %s' % interference)
+		print('handler: ',handler)
 		if (count==2 and interference==1):
 			score+=1
 		elif(count==2 and interference==0):
@@ -272,5 +269,12 @@ class chess(object):
 			score+=10000
 		else:
 			score+=0
-		return(score)
+		print(score)
+		if(len(handler)==4):
+			self.rank[handler[0]][handler[1]]+=score
+			self.rank[handler[2]][handler[3]]+=score
+		elif(len(handler)==2):
+			self.rank[handler[0]][handler[1]]+=score
+		print(self.rank)
+
 
