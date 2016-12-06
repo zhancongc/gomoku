@@ -70,7 +70,7 @@ socket.on('restart',function(message){
 	console.log('loser: '+chessJson['loser']);
 	console.log('opponent: '+chess.opponent);
 	if (chessJson['loser']===chess.opponent) {
-		var varification=confirm(chess.opponent+'希望结束这一局，开始下一局游戏，你接收吗？');
+		var varification=confirm(chess.opponent+'希望结束这一局，开始下一局游戏，你接受吗？');
 		var message=new Object();
 		message.user=chess.user;
 		if (varification) {

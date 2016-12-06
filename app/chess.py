@@ -120,6 +120,32 @@ class Chess(object):
 		log.write(message)
 		log.close()
 
+	def Score(self,count,interference):
+		if (count==2 and interference==1):
+			score=1
+		elif(count==2 and interference==0):
+			score=10
+		elif(count==3 and interference==1):
+			score=10
+		elif(count==3 and interference==0):
+			score=100
+		elif(count==4 and interference==1):
+			score=100
+		elif(count==4 and interference==0):
+			score=1000
+		elif(count==5 and interference==1):
+			score=1000
+		elif(count==5 and interference==0):
+			score=10000
+		elif(count==6 and interference==2):
+			score=10000
+		elif(count==6 and interference==1):
+			score=10000
+		elif(count==6 and interference==0):
+			score=10000
+		else:
+			score=0
+		return(score)
 
 	def dotRank(self,type,varification,coordinate):# fiveConnection(0,1,[4,5])
 		count=0 #连子个数
@@ -245,36 +271,35 @@ class Chess(object):
 		print('count: %s' % count)
 		print('interference: %s' % interference)
 		print('handler: ',handler)
-		if (count==2 and interference==1):
-			score+=1
-		elif(count==2 and interference==0):
-			score+=10
-		elif(count==3 and interference==1):
-			score+=10
-		elif(count==3 and interference==0):
-			score+=100
-		elif(count==4 and interference==1):
-			score+=100
-		elif(count==4 and interference==0):
-			score+=1000
-		elif(count==5 and interference==1):
-			score+=1000
-		elif(count==5 and interference==0):
-			score+=10000
-		elif(count==6 and interference==2):
-			score+=10000
-		elif(count==6 and interference==1):
-			score+=10000
-		elif(count==6 and interference==0):
-			score+=10000
+		score+=self.Score(count,interference)
+		if varification==1:
+			score/=(count-1)
 		else:
-			score+=0
-		print(score)
+			score/=(count+2)
+		print(int(score))
 		if(len(handler)==4):
-			self.rank[handler[0]][handler[1]]+=score
-			self.rank[handler[2]][handler[3]]+=score
+			if (self.chessBar[handler[0]][handler[1]]==0):
+				self.rank[handler[0]][handler[1]]+=int(score)
+			if (self.chessBar[handler[2]][handler[3]]==0):
+				self.rank[handler[2]][handler[3]]+=int(score)
 		elif(len(handler)==2):
-			self.rank[handler[0]][handler[1]]+=score
-		print(self.rank)
+			if (self.chessBar[handler[0]][handler[1]]==0):
+				self.rank[handler[0]][handler[1]]+=int(score)
 
+	def findDot(self,varification):
+		dots=[]
+		for x in range(0,15):
+			for y in range(0,15):
+				if(self.chessBar[x][y]==varification):
+					dots.append([x,y])
+		return(dots)
 
+	def topScore(self):
+		tmp=0
+		dot=[]
+		for x in range(0,15):
+			for y in range(0,15):
+				if(self.chessBar[x][y]==0 and self.rank[x][y]>tmp):
+					tmp=self.rank[x][y]
+					dot=[x,y]
+		return(dot)

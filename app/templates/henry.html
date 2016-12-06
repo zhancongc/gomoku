@@ -287,7 +287,189 @@
 	<div id="gameHelp">黑方先手，白方后手，双方轮流落子，先摆成五子连珠一方获胜</div>
 </div>
 <div id="log"></div>
-<script type="text/javascript" src="../static/henry/henry.js"></script>
-<script type="text/javascript" src="../static/gomoku/gomoku_socketio.js"></script>
+<script type="text/javascript">
+//游戏逻辑
+//创建一个五子棋对象，并初始化
+var chess=new Object();
+//初始化本地用户
+chess.user=prompt('What is your name?').toString();
+$('#player1').html('<p>玩家：'+chess.user+'</p>');
+function initial(){
+	//棋子的序号，描述落子的先后顺序
+	chess.code=0;
+	//你的对手
+	chess.opponent='computer'
+	//对应start监听器
+	chess.start=0;
+	//对应coordinate监听器
+	chess.coordinate=[];
+	//对应result监听器
+	chess.result='';
+	//对应restart监听器
+	chess.loser='';
+	//清除场上的棋子
+	list=$('span');
+	log('Now,it is a new game.');
+	for(var i=0;i<list.length;i++){
+		list[i].parentNode.style.backgroundImage='';
+		list[i].parentNode.innerHTML='';
+	}
+}
+$(document).ready(function(){
+	initial();
+});	
+//建立websocket通讯客户端
+var namespace='/';
+var socket=io.connect(location.protocol+'//'+document.domain+':'+location.port+namespace);
+//监听日志
+socket.on('response',function(message){
+	try{
+		var chessJson=JSON.parse(message['data']);
+		if(chessJson.msg)
+			log(chessJson.user+': '+chessJson.msg);
+		return false;
+	}
+	catch(e){
+		log(message['data']);
+		return false;
+	}
+});
+//监听游戏开始
+socket.on('start',function(message){
+	var chessJson=JSON.parse(message['data']);
+	chess.start=chessJson['start'];
+	log('Game start.');
+	chess.opponent='computer';
+});
+
+//监听落子信息
+socket.on('coordinate',function(message){
+	//{'user':'jack','image':'../static/gomoku/black.png','x':6,'y':5}
+	chess.code+=1
+	log(chess.code);
+	log(message['data']);
+	var obj=JSON.parse(message['data']);
+	log(obj);
+	chess.image=obj.image;
+	chess.coordinate=[obj.x,obj.y];
+	log(chess.coordinate);
+	getCell(chess.coordinate).style.backgroundImage='url('+chess.image+')';
+	getCell(chess.coordinate).innerHTML='<span class="code">'+chess.code.toString()+'</span>';
+	getCell(chess.coordinate).children[0].style.color=(chess.code%2===1?'white':'grey');
+});
+//监听胜负信息
+socket.on('result',function(message){
+	var chessJson=JSON.parse(message['data']);//{'result':'lucy'}
+	print('chessJson')
+	chess.result=chessJson.result;
+	log('Winner is '+chess.result);
+	chess.start=0;
+	if(chess.result===chess.user){
+		alert('恭喜，你赢了！');
+	}
+	else if (chess.result==='dogfall') {
+		alert('很可惜是平局，再来一局如何？');
+	}
+	else {
+		alert(chess.result+'赢了。');
+	}
+});
+//监听初始化
+socket.on('clear',function chessClear(){
+	initial();
+});
+//获取元素坐标的函数
+function getCoordinate(obj){
+	var chessBar=document.querySelectorAll('.chess-line');
+	var parentElement=obj.parentElement;
+	var i=0,j=0;
+	for (i = 0; obj; i++) {
+		obj=obj.previousElementSibling;
+	}
+	for (j = 0; parentElement; j++) {
+		parentElement=parentElement.previousElementSibling;
+	}
+	return [i-1,j-1];
+}
+//通过坐标获取元素的函数
+function getCell(coordinate){
+	var x=-1,y=-1;
+	x=coordinate[0];
+	y=coordinate[1];
+	var chessBar=document.querySelectorAll('.chess-line');
+	var obj=chessBar[y].childNodes[2*x+1];
+	return obj;
+}
+//log生成函数
+function log(msg) {
+	document.getElementById('log').innerHTML='<p>'+msg+'</p>'+document.getElementById('log').innerHTML;
+}
+//准备消息
+function prepare(){
+	var chessJson=new Object();
+	chessJson.user=chess.user;
+	msgPrepare=JSON.stringify(chessJson);
+	socket.emit('prepare',{data: msgPrepare});//{'user':'jack'}
+}
+//发送落子消息
+function play(obj){
+	if (chess.start==1 && obj.style.backgroundImage===''){
+		var coordinate=getCoordinate(obj);
+		var chessJson=new Object();
+		chessJson.user=chess.user;
+		chessJson.image='../static/gomoku/white.png';
+		chessJson.x=coordinate[0];
+		chessJson.y=coordinate[1];
+		var chessData=JSON.stringify(chessJson);
+		socket.emit('chess',{data: chessData});
+		//{'user':'jack','image':'../static/gomoku/black.png','x':6,'y':5}
+	}
+}
+//请求重来
+function restart(){
+	if (chess.start===1) {
+		var varification=confirm('你希望认输并开始下一局吗？')
+		if(varification){
+			chess.loser=chess.user;
+			var message=new Object();
+			message.loser=chess.opponent;
+			var msgRestart=JSON.stringify(message);
+			socket.emit('restart',{data: msgRestart});//{'loser':'jack'}
+		}
+	}
+	if(chess.start===0){
+		var message=new Object();
+		message.user=chess.user;
+		var msgClear=JSON.stringify(message);
+		socket.emit('clear', {data: msgClear});
+	}
+}
+//聊天模块
+//注册键盘事件
+document.onkeydown = function(e) {
+	//捕捉回车事件
+	var ev = (typeof event!= 'undefined') ? window.event : e;
+	if(ev.keyCode == 13) {
+		send();
+	}
+}
+function send() {
+	if(!document.getElementById('text').value){
+		alert('please enter something.');
+		return false;
+	}
+	var msg='';
+	msg=document.getElementById('text').value;
+	var message=new Object();
+	message.user=chess.user;
+	message.msg=msg;
+	var msgSend=JSON.stringify(message);
+	socket.emit('message', {data: msgSend});
+	document.getElementById('text').value='';
+};
+function gameHelp(){
+	$("#gameHelp").slideToggle();
+}
+</script>
 </body>
 </html>
